@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 export default () => {
   return (
     <div className="header">
@@ -7,9 +9,9 @@ export default () => {
           <a className="signup" href="#">
             Sign Up
           </a>
-          <a className="signin" href="#">
+          <NavLink className="signin" to="/sign-in">
             Sign In
-          </a>
+          </NavLink>
         </nav>
       </div>
     </div>

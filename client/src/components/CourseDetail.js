@@ -3,11 +3,15 @@ import { Context } from "../Context";
 
 export default function CourseDetail(props) {
   const [course, setCourse] = useState({});
+  const [materials, setMaterials] = useState([]);
   const { data } = useContext(Context);
 
   useEffect(async () => {
     const response = await data.getCourse(props.location.state.courseId);
-    setCourse(response.course);
+    const course = response.course;
+    const items = course.materialsNeeded.split("*").filter((item) => item);
+    setCourse(course);
+    setMaterials((prevMaterials) => [...prevMaterials, ...items]);
   }, []);
 
   return (
@@ -51,7 +55,9 @@ export default function CourseDetail(props) {
             <li className="course--stats--list--item">
               <h4>Materials Needed</h4>
               <ul>
-                <li>{course.materialsNeeded}</li>
+                {materials.map((material, i) => (
+                  <li key={i}>{material}</li>
+                ))}
               </ul>
             </li>
           </ul>
