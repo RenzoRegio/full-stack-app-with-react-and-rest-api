@@ -1,6 +1,6 @@
 export default class Data {
-  api(method = "GET") {
-    const url = "http://localhost:5000/api/courses";
+  api(path, method = "GET") {
+    const url = "http://localhost:5000/api" + path;
     const options = {
       method,
       headers: {
@@ -11,7 +11,12 @@ export default class Data {
   }
 
   async getCourses() {
-    const response = await this.api();
+    const response = await this.api("/courses");
+    return response.json().then((data) => data);
+  }
+
+  async getCourse(courseId) {
+    const response = await this.api(`/courses/${courseId}`);
     return response.json().then((data) => data);
   }
 }
