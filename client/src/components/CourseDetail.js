@@ -4,6 +4,7 @@ import { Context } from "../Context";
 export default function CourseDetail(props) {
   const [course, setCourse] = useState({});
   const [materials, setMaterials] = useState([]);
+  const [name, setName] = useState("");
   const { data } = useContext(Context);
 
   useEffect(async () => {
@@ -12,6 +13,7 @@ export default function CourseDetail(props) {
     const items = course.materialsNeeded.split("*").filter((item) => item);
     setCourse(course);
     setMaterials((prevMaterials) => [...prevMaterials, ...items]);
+    setName(`${course.user.firstName} ${course.user.lastName}`);
   }, []);
 
   return (
@@ -38,7 +40,7 @@ export default function CourseDetail(props) {
           <div className="course--header">
             <h4 className="course--label">Course</h4>
             <h3 className="course--title">{course.title}</h3>
-            <p>By AUTHOR </p>
+            <p>By {name} </p>
           </div>
           <div className="course--description">
             <p>{course.description}</p>

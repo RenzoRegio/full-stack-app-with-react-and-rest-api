@@ -1,5 +1,11 @@
 export default class Data {
-  api(path, method = "GET") {
+  api(
+    path,
+    method = "GET",
+    body = null,
+    requiresAuth = false,
+    credentials = null
+  ) {
     const url = "http://localhost:5000/api" + path;
     const options = {
       method,
@@ -18,5 +24,19 @@ export default class Data {
   async getCourse(courseId) {
     const response = await this.api(`/courses/${courseId}`);
     return response.json().then((data) => data);
+  }
+
+  async getUser(emailAddress, password) {
+    const response = await this.api("/users", "GET", null, true, {
+      emailAddress,
+      password,
+    });
+    if (response.status === 200) {
+      return response.json().then((data) => data);
+    } else if (response.status === 401) {
+      return null;
+    } else {
+      throw new Error();
+    }
   }
 }

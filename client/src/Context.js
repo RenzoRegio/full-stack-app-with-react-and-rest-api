@@ -11,12 +11,21 @@ export class Provider extends Component {
   render() {
     const value = {
       data: this.data,
-      actions: {},
+      actions: {
+        signIn: this.signIn,
+      },
     };
     return (
       <Context.Provider value={value}>{this.props.children}</Context.Provider>
     );
   }
+
+  signIn = async (emailAddress, password) => {
+    const user = await this.data.getUser(emailAddress, password);
+    if (user !== null) {
+      console.log("Authenticated");
+    }
+  };
 }
 export const Consumer = Context.Consumer;
 export default { Context };

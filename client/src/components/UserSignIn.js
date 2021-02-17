@@ -1,18 +1,41 @@
 import { Link } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Context } from "../Context";
 
 export default function UserSignIn() {
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const { actions } = useContext(Context);
+  const change = (e) => {
+    if (e.target.name === "emailAddress") {
+      setEmailAddress(e.target.value);
+    } else {
+      setPassword(e.target.value);
+    }
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    actions.signIn(emailAddress, password).then((user) => {
+      if (user !== null) {
+        console.log(`SUCCESS! ${emailAddress} is logged in`);
+      }
+    });
+  };
+
   return (
     <div className="bounds">
       <h1>Sign In</h1>
       <div>
-        <form>
+        <form onSubmit={submit}>
           <div>
             <input
               id="emailAddress"
               name="emailAddress"
               type="text"
               placeholder="Email Address"
-              value=""
+              value={emailAddress}
+              onChange={change}
             />
           </div>
           <div>
@@ -21,7 +44,8 @@ export default function UserSignIn() {
               name="password"
               type="text"
               placeholder="Password"
-              value=""
+              value={password}
+              onChange={change}
             />
           </div>
           <div className="grid-100 pad-bottom">
