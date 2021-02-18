@@ -25,6 +25,7 @@ export class Provider extends Component {
     if (user !== null) {
       console.log("Authenticated");
     }
+    return user;
   };
 }
 export const Consumer = Context.Consumer;

@@ -6,9 +6,9 @@ export default () => {
       <div className="bounds">
         <h1 className="header--logo">Courses</h1>
         <nav>
-          <a className="signup" href="#">
+          <NavLink className="signup" to="/sign-up">
             Sign Up
-          </a>
+          </NavLink>
           <NavLink className="signin" to="/sign-in">
             Sign In
           </NavLink>

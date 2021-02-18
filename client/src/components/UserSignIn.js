@@ -5,6 +5,7 @@ import { Context } from "../Context";
 export default function UserSignIn() {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState([]);
   const { actions } = useContext(Context);
   const change = (e) => {
     if (e.target.name === "emailAddress") {
@@ -16,11 +17,18 @@ export default function UserSignIn() {
 
   const submit = (e) => {
     e.preventDefault();
-    actions.signIn(emailAddress, password).then((user) => {
-      if (user !== null) {
-        console.log(`SUCCESS! ${emailAddress} is logged in`);
-      }
-    });
+    actions
+      .signIn(emailAddress, password)
+      .then((user) => {
+        if (!user) {
+          setErrors([{ errors: "Sign-in was unsuccessful" }]);
+        } else {
+          console.log(`SUCCESS! ${emailAddress} successfully logged in`);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
