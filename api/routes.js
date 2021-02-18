@@ -72,7 +72,7 @@ router.get("/courses/:id", async (req, res) => {
       {
         model: User,
         as: "user",
-        attributes: { exclude: ["createdAt", "updatedAt", "password"] },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
       },
     ],
     attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -87,7 +87,7 @@ router.get("/courses/:id", async (req, res) => {
 // POST Route - Creates a new course.
 router.post(
   "/courses",
-  authenticateUser,
+  //authenticateUser
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);
@@ -128,7 +128,9 @@ router.delete(
   "/courses/:id",
   authenticateUser,
   asyncHandler(async (req, res) => {
+    console.log(req.params.id);
     const course = await Course.findByPk(req.params.id);
+    console.log(course);
     if (course.userId === req.currentUser.id) {
       try {
         await course.destroy();
