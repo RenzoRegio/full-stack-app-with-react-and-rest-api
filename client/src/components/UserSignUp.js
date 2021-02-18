@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../Context";
+import { useHistory, Link } from "react-router-dom";
 
 export default function UserSignUp() {
   const { data } = useContext(Context);
@@ -31,6 +32,7 @@ export default function UserSignUp() {
   return (
     <div className="bounds">
       <div className="grid-33 centered signin">
+        <h1> Sign Up</h1>
         <div>
           <form onSubmit={submit}>
             <div>
@@ -91,13 +93,16 @@ export default function UserSignUp() {
               <button className="button" type="submit">
                 Sign Up
               </button>
-              <button className="button button-secondary">Cancel</button>
+              <Link to="/courses">
+                <button className="button button-secondary">Cancel</button>
+              </Link>
             </div>
           </form>
         </div>
         <p>&nbsp;</p>
         <p>
-          Already have a user account? <a href="#">Click here</a> to sign in!
+          Already have a user account? <Link to="/sign-in">Click here</Link> to
+          sign in!
         </p>
       </div>
     </div>

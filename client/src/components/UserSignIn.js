@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import React, { useState, useContext } from "react";
 import { Context } from "../Context";
 
@@ -7,6 +7,8 @@ export default function UserSignIn() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const { actions } = useContext(Context);
+  const history = useHistory();
+
   const change = (e) => {
     if (e.target.name === "emailAddress") {
       setEmailAddress(e.target.value);
@@ -23,6 +25,7 @@ export default function UserSignIn() {
         if (!user) {
           setErrors([{ errors: "Sign-in was unsuccessful" }]);
         } else {
+          history.push("/courses");
           console.log(`SUCCESS! ${emailAddress} successfully logged in`);
         }
       })
@@ -60,13 +63,15 @@ export default function UserSignIn() {
             <button className="button" type="submit">
               Sign In
             </button>
-            <button className="button button-secondary">Cancel</button>
+            <Link to="/courses">
+              <button className="button button-secondary">Cancel</button>
+            </Link>
           </div>
         </form>
       </div>
       <p>&nbsp;</p>
       <p>
-        Don't have a user account? <Link>Click here</Link>{" "}
+        Don't have a user account? <Link to="/sign-up">Click here</Link>
       </p>
     </div>
   );

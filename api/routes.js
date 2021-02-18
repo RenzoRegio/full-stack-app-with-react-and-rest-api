@@ -17,7 +17,7 @@ router.get(
     const user = await User.findOne({
       where: { emailAddress: req.currentUser.emailAddress },
       attributes: {
-        exclude: ["createdAt", "updatedAt", "password"],
+        exclude: ["createdAt", "updatedAt"],
       },
     });
     res.json({
@@ -87,7 +87,7 @@ router.get("/courses/:id", async (req, res) => {
 // POST Route - Creates a new course.
 router.post(
   "/courses",
-  //authenticateUser
+  authenticateUser,
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);

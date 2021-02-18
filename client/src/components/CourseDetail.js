@@ -1,34 +1,74 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../Context";
+import { Link, useHistory } from "react-router-dom";
 
 export default function CourseDetail(props) {
   const [course, setCourse] = useState({});
   const [materials, setMaterials] = useState([]);
   const [name, setName] = useState("");
-  const { data } = useContext(Context);
+  const [userId, setUserId] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const { data, authenticatedUser, password1, actions } = useContext(Context);
+  const history = useHistory();
 
   useEffect(async () => {
     const response = await data.getCourse(props.location.state.courseId);
     const course = response.course;
-    const items = course.materialsNeeded.split("*").filter((item) => item);
+    let items;
+    if (course.materialsNeeded) {
+      if (course.materialsNeeded.includes("*")) {
+        items = course.materialsNeeded.split("*").filter((item) => item);
+        setMaterials((prevMaterials) => [...prevMaterials, ...items]);
+      }
+    } else {
+      items = course.materialsNeeded;
+      setMaterials((prevMaterials) => [...prevMaterials, items]);
+    }
     setCourse(course);
-    setMaterials((prevMaterials) => [...prevMaterials, ...items]);
     setName(`${course.user.firstName} ${course.user.lastName}`);
+    setUserId(course.user.id);
+    setUserEmail(course.user.emailAddress);
+    setUserPassword(password1);
   }, []);
+
+  const deleteCourse = () => {
+    data.deleteCourse(course.id, userEmail, userPassword).then((err) => {
+      if (err.length) {
+        console.log(err);
+      } else {
+        history.push("/");
+      }
+    });
+  };
+
+  const updateCourse = () => {
+    actions.getCourse(course).then((err) => {
+      if (err.length) {
+        console.log(err);
+      } else {
+        history.push(`/courses/${course.id}/update`);
+      }
+    });
+  };
 
   return (
     <React.Fragment>
       <div className="actions--bar">
         <div className="bounds">
           <div className="grid-100">
-            <span>
-              <a className="button" href="#">
-                Update Course
-              </a>
-              <a className="button" href="#">
-                Delete Course
-              </a>
-            </span>
+            {authenticatedUser && userId == authenticatedUser.user.id ? (
+              <React.Fragment>
+                <span>
+                  <button className="button" onClick={() => updateCourse()}>
+                    Update Course
+                  </button>
+                  <button className="button" onClick={() => deleteCourse()}>
+                    Delete Course
+                  </button>
+                </span>
+              </React.Fragment>
+            ) : null}
             <a className="button button-secondary" href="/">
               Return to List
             </a>
