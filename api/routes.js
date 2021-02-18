@@ -128,7 +128,6 @@ router.delete(
   "/courses/:id",
   authenticateUser,
   asyncHandler(async (req, res) => {
-    console.log(req.params.id);
     const course = await Course.findByPk(req.params.id);
     console.log(course);
     if (course.userId === req.currentUser.id) {

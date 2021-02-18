@@ -15,23 +15,6 @@ export class Provider extends Component {
     course: null,
   };
 
-  render() {
-    const { authenticatedUser, password1, course } = this.state;
-    const value = {
-      authenticatedUser,
-      password1,
-      course,
-      data: this.data,
-      actions: {
-        signIn: this.signIn,
-        getCourse: this.getCourse,
-      },
-    };
-    return (
-      <Context.Provider value={value}>{this.props.children}</Context.Provider>
-    );
-  }
-
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password);
     if (user !== null) {
@@ -48,6 +31,23 @@ export class Provider extends Component {
       course: courseObj,
     });
   };
+
+  render() {
+    const { authenticatedUser, password1, course } = this.state;
+    const value = {
+      authenticatedUser,
+      password1,
+      course,
+      data: this.data,
+      actions: {
+        signIn: this.signIn,
+        getCourse: this.getCourse,
+      },
+    };
+    return (
+      <Context.Provider value={value}>{this.props.children}</Context.Provider>
+    );
+  }
 }
 export const Consumer = Context.Consumer;
 export default { Context };

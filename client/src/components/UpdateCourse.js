@@ -1,24 +1,58 @@
 import { Context } from "../Context";
 import React, { useContext, useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 
 export default function UpdateCourse() {
-  const { course } = useContext(Context);
-  const [title, setTitle] = useState("");
-
-  useEffect(() => {
-    setTitle(course.title);
-  }, []);
+  const { course, data, password1, authenticatedUser } = useContext(Context);
+  const [currentCourse, setCurrentCourse] = useState(course);
+  const [title, setTitle] = useState(currentCourse.title);
+  const [description, setDescription] = useState(currentCourse.description);
+  const [estimatedTime, setEstimatedTime] = useState(
+    currentCourse.estimatedTime
+  );
+  const [materialsNeeded, setMaterialsNeeded] = useState(
+    currentCourse.materialsNeeded
+  );
+  const history = useHistory();
 
   const change = (e) => {
     if (e.target.name === "title") {
       setTitle(e.target.value);
+    } else if (e.target.name === "description") {
+      setDescription(e.target.value);
+    } else if (e.target.name === "estimatedTime") {
+      setEstimatedTime(e.target.value);
+    } else if (e.target.name === "materialsNeeded") {
+      setMaterialsNeeded(e.target.value);
     }
   };
+
+  const emailAddress = authenticatedUser.user.emailAddress;
+  const updateCourseData = {
+    title,
+    description,
+    estimatedTime,
+    materialsNeeded,
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    data
+      .updateCourse(course.id, updateCourseData, emailAddress, password1)
+      .then((err) => {
+        if (err.length) {
+          console.log(err);
+        } else {
+          history.push(`/`);
+        }
+      });
+  };
+
   return (
     <div className="bounds course--detail">
       <h1>Update Course</h1>
       <div>
-        <form>
+        <form onSubmit={submit}>
           <div className="grid-66">
             <div className="course--header">
               <h4 className="course--label">Course</h4>
@@ -41,9 +75,9 @@ export default function UpdateCourse() {
                   id="description"
                   name="description"
                   placeholder="Course description..."
-                >
-                  DESCRIPTION
-                </textarea>
+                  onChange={change}
+                  value={description}
+                ></textarea>
               </div>
             </div>
           </div>
@@ -59,7 +93,8 @@ export default function UpdateCourse() {
                       type="text"
                       className="course--time--input"
                       placeholder="Hours"
-                      value="ESTIMATEDTIME"
+                      value={estimatedTime}
+                      onChange={change}
                     />
                   </div>
                 </li>
@@ -70,9 +105,9 @@ export default function UpdateCourse() {
                       id="materialsNeeded"
                       name="materialsNeeded"
                       placeholder="List materials..."
-                    >
-                      MATERIALS
-                    </textarea>
+                      onChange={change}
+                      value={materialsNeeded}
+                    ></textarea>
                   </div>
                 </li>
               </ul>
@@ -82,7 +117,17 @@ export default function UpdateCourse() {
             <button className="button" type="submit">
               Update Course
             </button>
-            <button className="button button-secondary">Cancel</button>
+            <Link
+              className="button button-secondary"
+              to={{
+                pathname: `/courses/${course.id}`,
+                state: {
+                  courseId: course.id,
+                },
+              }}
+            >
+              Cancel
+            </Link>
           </div>
         </form>
       </div>

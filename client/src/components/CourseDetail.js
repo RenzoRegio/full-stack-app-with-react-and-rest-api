@@ -43,13 +43,8 @@ export default function CourseDetail(props) {
   };
 
   const updateCourse = () => {
-    actions.getCourse(course).then((err) => {
-      if (err.length) {
-        console.log(err);
-      } else {
-        history.push(`/courses/${course.id}/update`);
-      }
-    });
+    actions.getCourse(course);
+    history.push(`/courses/${course.id}/update`);
   };
 
   return (
