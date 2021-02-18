@@ -14,6 +14,10 @@ export default class Data {
       },
     };
 
+    if (body !== null) {
+      options.body = JSON.stringify(body);
+    }
+
     if (requiresAuth) {
       const encodedCredentials = btoa(
         `${credentials.emailAddress}:${credentials.password}`
@@ -45,6 +49,13 @@ export default class Data {
       return null;
     } else {
       throw new Error();
+    }
+  }
+
+  async createUser(user) {
+    const response = await this.api("/users", "POST", user);
+    if (response.status === 201) {
+      return [];
     }
   }
 }

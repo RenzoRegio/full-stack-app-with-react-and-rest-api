@@ -1,9 +1,38 @@
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../Context";
+
 export default function UserSignUp() {
+  const { data } = useContext(Context);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
+
+  const change = (e) => {
+    if (e.target.name === "firstName") {
+      setFirstName(e.target.value);
+    } else if (e.target.name === "lastName") {
+      setLastName(e.target.value);
+    } else if (e.target.name === "emailAddress") {
+      setEmailAddress(e.target.value);
+    } else if (e.target.name === "password") {
+      setPassword(e.target.value);
+    }
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    const user = { firstName, lastName, emailAddress, password };
+    data.createUser(user).then((err) => {
+      console.log(err);
+    });
+  };
+
   return (
     <div className="bounds">
       <div className="grid-33 centered signin">
         <div>
-          <form>
+          <form onSubmit={submit}>
             <div>
               <input
                 id="firstName"
@@ -11,7 +40,8 @@ export default function UserSignUp() {
                 type="text"
                 className=""
                 placeholder="First Name"
-                value=""
+                value={firstName}
+                onChange={change}
               />
             </div>
             <div>
@@ -21,7 +51,8 @@ export default function UserSignUp() {
                 type="text"
                 className=""
                 placeholder="Last Name"
-                value=""
+                value={lastName}
+                onChange={change}
               />
             </div>
             <div>
@@ -31,7 +62,8 @@ export default function UserSignUp() {
                 type="text"
                 className=""
                 placeholder="Email Address"
-                value=""
+                value={emailAddress}
+                onChange={change}
               />
             </div>
             <div>
@@ -41,10 +73,11 @@ export default function UserSignUp() {
                 type="password"
                 className=""
                 placeholder="Password"
-                value=""
+                value={password}
+                onChange={change}
               />
             </div>
-            <div>
+            {/* <div>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -53,7 +86,7 @@ export default function UserSignUp() {
                 placeholder="Confirm Password"
                 value=""
               />
-            </div>
+            </div> */}
             <div className="grid-100 pad-bottom">
               <button className="button" type="submit">
                 Sign Up
