@@ -6,6 +6,8 @@ import UserSignIn from "./components/UserSignIn";
 import UserSignUp from "./components/UserSignUp";
 import CreateCourse from "./components/CreateCourse";
 import UpdateCourse from "./components/UpdateCourse";
+import UserSignOut from "./components/UserSignOut";
+
 export default () => {
   return (
     <BrowserRouter>
@@ -18,6 +20,7 @@ export default () => {
         <Route exact path="/courses/:id" component={CourseDetail} />
         <Route exact path="/sign-in" component={UserSignIn} />
         <Route exact path="/sign-up" component={UserSignUp} />
+        <Route exact path="/sign-out" component={UserSignOut} />
       </Switch>
     </BrowserRouter>
   );

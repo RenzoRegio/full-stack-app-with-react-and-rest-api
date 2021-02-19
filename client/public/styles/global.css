@@ -207,7 +207,7 @@ body {
 
 /* line 13, ../sass/global.sass */
 .header {
-  background: #57496e;
+  background: black;
   padding: 20px 0;
   margin-bottom: 30px;
 }
@@ -255,13 +255,12 @@ body {
 
 /* line 44, ../sass/global.sass */
 .actions--bar {
-  border-bottom: 1px solid #d5f9fe;
-  background: #f8feff;
   padding: 20px 0;
   margin-top: -30px;
 }
 /* line 2, ../sass/mixins.sass */
-.actions--bar:before, .actions--bar:after {
+.actions--bar:before,
+.actions--bar:after {
   content: " ";
   display: table;
 }
@@ -282,7 +281,7 @@ h1 {
 
 /* line 61, ../sass/global.sass */
 a {
-  color: #7c689b;
+  color: black;
   cursor: pointer;
   text-decoration: none;
   -webkit-transition: color 0.2s;
@@ -305,7 +304,11 @@ p {
 }
 
 /* line 74, ../sass/global.sass */
-.grid, .grid-25, .grid-33, .grid-66, .grid-100 {
+.grid,
+.grid-25,
+.grid-33,
+.grid-66,
+.grid-100 {
   float: left;
   padding: 0 15px;
   box-sizing: border-box;
@@ -339,7 +342,7 @@ p {
 
 /* line 102, ../sass/global.sass */
 .course--module {
-  background: #7c689b;
+  background: white;
   border-radius: 8px;
   padding: 30px;
   margin-bottom: 30px;
@@ -349,7 +352,8 @@ p {
   box-sizing: border-box;
 }
 /* line 2, ../sass/mixins.sass */
-.course--module:before, .course--module:after {
+.course--module:before,
+.course--module:after {
   content: " ";
   display: table;
 }
@@ -363,26 +367,37 @@ p {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 /* line 116, ../sass/global.sass */
 .course--label {
   font-family: "Cousine";
   font-size: 14px;
   font-weight: 100;
-  color: rgba(255, 255, 255, 0.5);
+  color: black;
   margin-bottom: 10px;
   font-weight: normal;
 }
 /* line 123, ../sass/global.sass */
 .course--title {
   font-size: 18px;
-  color: #fff;
+  color: #444;
+  text-shadow: 1px 0px 1px #ccc, 0px 1px 1px #eee, 2px 1px 1px #ccc,
+    1px 2px 1px #eee, 3px 2px 1px #ccc, 2px 3px 1px #eee, 4px 3px 1px #ccc,
+    3px 4px 1px #eee, 5px 4px 1px #ccc, 4px 5px 1px #eee, 6px 5px 1px #ccc,
+    5px 6px 1px #eee, 7px 6px 1px #ccc;
 }
 /* line 126, ../sass/global.sass */
 .course--link {
   display: block;
   cursor: pointer;
   text-decoration: none;
-  border: 0;
+  border: 2px solid black;
+  box-shadow: 0px 6px;
+  transition: box-shadow ease-in-out 0.2s;
+}
+
+.course--link:hover {
+  box-shadow: 0px 4px;
 }
 /* line 133, ../sass/global.sass */
 .course--add--module {
@@ -478,7 +493,8 @@ p {
   font-family: "Cousine";
 }
 /* line 2, ../sass/mixins.sass */
-.course--description li:before, .course--description li:after {
+.course--description li:before,
+.course--description li:after {
   content: " ";
   display: table;
 }
@@ -678,12 +694,11 @@ input:focus {
 
 /* line 507, ../sass/global.sass */
 .button {
-  background: #7c689b;
-  color: #fff;
+  color: black;
+  box-shadow: 0px 3px;
   font-family: "Work Sans", sans-serif;
   font-size: 18px;
   padding: 15px 30px;
-  border: 0;
   margin-right: 10px;
   border-radius: 8px;
   font-weight: bold;
@@ -701,24 +716,26 @@ input:focus {
 }
 /* line 522, ../sass/global.sass */
 .button:not(.button-secondary):hover {
-  background: #63537d;
+  background-color: black;
+  color: white;
 }
 
 /* line 525, ../sass/global.sass */
 .button-secondary {
-  color: #7c689b;
-  background: none;
-  box-shadow: 0 0 0 2px #7c689b inset;
+  color: black;
+  border: 1px solid black;
+  box-shadow: 0px 3px;
   -webkit-transition: box-shadow 0.2s, color 0.2s;
   -moz-transition: box-shadow 0.2s, color 0.2s;
   -ms-transition: box-shadow 0.2s, color 0.2s;
   -o-transition: box-shadow 0.2s, color 0.2s;
-  transition: box-shadow 0.2s, color 0.2s;
+  transition: box-shadow 0.3s, color 0.3s;
 }
 /* line 530, ../sass/global.sass */
 .button-secondary:hover {
-  color: #63537d;
-  box-shadow: 0 0 0 2px #63537d inset;
+  color: white;
+  background-color: black;
+  box-shadow: 0px 3px;
 }
 
 /* adds additional padding to the bottom of an element */

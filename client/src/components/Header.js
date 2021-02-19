@@ -15,9 +15,9 @@ export default () => {
                 Welcome {authenticatedUser.user.firstName}{" "}
                 {authenticatedUser.user.lastName}!
               </span>
-              <a className="signout" href="#">
+              <NavLink className="signout" to="/sign-out">
                 Sign Out
-              </a>
+              </NavLink>
             </React.Fragment>
           ) : (
             <React.Fragment>
