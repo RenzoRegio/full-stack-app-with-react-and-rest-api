@@ -55,18 +55,24 @@ export default function CourseDetail(props) {
             {authenticatedUser && userId == authenticatedUser.user.id ? (
               <React.Fragment>
                 <span>
-                  <button className="button" onClick={() => updateCourse()}>
+                  <button
+                    className="button update-btn"
+                    onClick={() => updateCourse()}
+                  >
                     Update Course
                   </button>
-                  <button className="button" onClick={() => deleteCourse()}>
+                  <button
+                    className="button delete-btn"
+                    onClick={() => deleteCourse()}
+                  >
                     Delete Course
                   </button>
                 </span>
               </React.Fragment>
             ) : null}
-            <a className="button button-secondary" href="/">
+            <Link className="button button-secondary" to="/">
               Return to List
-            </a>
+            </Link>
           </div>
         </div>
       </div>

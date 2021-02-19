@@ -67,7 +67,7 @@ export default function UpdateCourse() {
                   onChange={change}
                 />
               </div>
-              <p>AUTHOR</p>
+              <p>{`${authenticatedUser.user.firstName} ${authenticatedUser.user.lastName}`}</p>
             </div>
             <div className="course--description">
               <div>
@@ -114,11 +114,11 @@ export default function UpdateCourse() {
             </div>
           </div>
           <div className="grid-100 pad-bottom">
-            <button className="button" type="submit">
+            <button className="button update-btn" type="submit">
               Update Course
             </button>
             <Link
-              className="button button-secondary"
+              className="button button-secondary delete-btn"
               to={{
                 pathname: `/courses/${course.id}`,
                 state: {

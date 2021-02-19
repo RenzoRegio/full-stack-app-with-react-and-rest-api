@@ -26,6 +26,7 @@ export class Provider extends Component {
         signIn: this.signIn,
         signOut: this.signOut,
         getCourse: this.getCourse,
+        DisplayErrors: this.DisplayErrors,
       },
     };
 
@@ -53,6 +54,29 @@ export class Provider extends Component {
     this.setState({
       course: courseObj,
     });
+  };
+
+  DisplayErrors = ({ errorsObject }) => {
+    if (errorsObject.length) {
+      return (
+        <div className="validation--errors--container">
+          <h2 className="validation--errors--label">ERROR</h2>
+          <div className="validation-errors">
+            <ul>
+              {errorsObject.map((err, i) => {
+                return (
+                  <li className="error" key={i}>
+                    {err}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
 }
 

@@ -8,7 +8,7 @@ export default function UserSignIn() {
   const [errors, setErrors] = useState([]);
   const { actions } = useContext(Context);
   const history = useHistory();
-
+  const DisplayErrors = actions.DisplayErrors;
   const change = (e) => {
     if (e.target.name === "emailAddress") {
       setEmailAddress(e.target.value);
@@ -23,7 +23,7 @@ export default function UserSignIn() {
       .signIn(emailAddress, password)
       .then((user) => {
         if (!user) {
-          setErrors([{ errors: "Sign-in was unsuccessful" }]);
+          setErrors(["Sign-in was unsuccessful"]);
         } else {
           history.push("/courses");
           console.log(`SUCCESS! ${emailAddress} successfully logged in`);
@@ -36,8 +36,9 @@ export default function UserSignIn() {
 
   return (
     <div className="bounds">
-      <h1>Sign In</h1>
+      <h1 className="signin-title">Sign In</h1>
       <div>
+        <DisplayErrors errorsObject={errors} />
         <form onSubmit={submit}>
           <div>
             <input
@@ -47,6 +48,7 @@ export default function UserSignIn() {
               placeholder="Email Address"
               value={emailAddress}
               onChange={change}
+              className="input-style"
             />
           </div>
           <div>
@@ -57,6 +59,7 @@ export default function UserSignIn() {
               placeholder="Password"
               value={password}
               onChange={change}
+              className="input-style"
             />
           </div>
           <div className="grid-100 pad-bottom">
@@ -71,7 +74,11 @@ export default function UserSignIn() {
       </div>
       <p>&nbsp;</p>
       <p>
-        Don't have a user account? <Link to="/sign-up">Click here</Link>
+        Don't have a user account?{" "}
+        <Link className="redirect-link" to="/sign-up">
+          Click here
+        </Link>{" "}
+        to sign up!
       </p>
     </div>
   );

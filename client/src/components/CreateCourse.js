@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../Context";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export default function CreateCourse() {
-  const { data, authenticatedUser, password1 } = useContext(Context);
+  const { data, authenticatedUser, password1, actions } = useContext(Context);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
@@ -14,6 +14,8 @@ export default function CreateCourse() {
   );
   const [userPassword, setUserPassword] = useState(password1);
   const history = useHistory();
+  const [errors, setErrors] = useState([]);
+  const DisplayErrors = actions.DisplayErrors;
 
   const change = (e) => {
     e.preventDefault();
@@ -37,26 +39,54 @@ export default function CreateCourse() {
       materialsNeeded,
       userId,
     };
-    data.createCourse(course, userEmail, userPassword).then((err) => {
-      if (err.length) {
-        console.log(err);
+
+    data.createCourse(course, userEmail, userPassword).then((errors) => {
+      if (errors.length) {
+        setErrors(errors);
+        const errorsList = document.querySelectorAll(".error");
+        checkErrors(errorsList);
+        const form = document.querySelector("form");
+        form.addEventListener("submit", () => {
+          validateErrors(errorsList);
+        });
       } else {
         history.push("/");
       }
     });
   };
 
+  const checkErrors = (errorsList) => {
+    const titleBox = document.querySelector("#title");
+    const descriptionBox = document.querySelector("#description");
+    for (let i = 0; i < errorsList.length; i++) {
+      const error = errorsList[i].textContent.toLowerCase();
+      if (error.includes("title")) {
+        titleBox.style.border = "2px solid red";
+      }
+      if (error.includes("description")) {
+        descriptionBox.style.border = "2px solid red";
+      }
+    }
+  };
+
+  const validateErrors = (errorsList) => {
+    const titleBox = document.querySelector("#title");
+    const descriptionBox = document.querySelector("#description");
+    for (let i = 0; i < errorsList.length; i++) {
+      const error = errorsList[i].textContent.toLowerCase();
+      if (!error.includes("title")) {
+        titleBox.style.border = "2px solid green";
+      }
+      if (!error.includes("description")) {
+        descriptionBox.style.border = "2px solid green";
+      }
+    }
+  };
+
   return (
     <div className="bounds course--detail">
       <h1> Create Course </h1>
-      <div>
-        <h2 className="validation--errors--label">Validation Errors</h2>
-        <div className="validation-errors">
-          <ul>
-            <li>Please provide a value for "Title"</li>
-          </ul>
-        </div>
-      </div>
+      <DisplayErrors errorsObject={errors} />
       <form onSubmit={submit}>
         <div className="grid-66">
           <div className="course--header">
@@ -72,7 +102,10 @@ export default function CreateCourse() {
                 onChange={change}
               />
             </div>
-            <p>By Joe Smith</p>
+            <p>
+              By{" "}
+              {`${authenticatedUser.user.firstName} ${authenticatedUser.user.lastName}`}
+            </p>
           </div>
           <div className="course--description">
             <div>
@@ -123,7 +156,10 @@ export default function CreateCourse() {
           <button className="button" type="submit">
             Create Course
           </button>
-          <button className="button button-secondary"> Cancel </button>
+          <Link className="button button-secondary" to="/">
+            {" "}
+            Cancel{" "}
+          </Link>
         </div>
       </form>
     </div>

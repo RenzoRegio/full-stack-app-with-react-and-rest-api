@@ -60,6 +60,12 @@ export default class Data {
     const response = await this.api("/users", "POST", user);
     if (response.status === 201) {
       return [];
+    } else if (response.status === 400) {
+      return response.json().then((data) => {
+        return data.errors;
+      });
+    } else {
+      return new Error();
     }
   }
 
@@ -70,6 +76,12 @@ export default class Data {
     });
     if (response.status === 201) {
       return [];
+    } else if (response.status === 400) {
+      return response.json().then((data) => {
+        return data.errors;
+      });
+    } else {
+      return new Error();
     }
   }
 
