@@ -25,7 +25,7 @@ export default function UserSignIn() {
         if (!user) {
           setErrors(["Sign-in was unsuccessful"]);
         } else {
-          history.push("/courses");
+          history.push("/");
           console.log(`SUCCESS! ${emailAddress} successfully logged in`);
         }
       })

@@ -7,7 +7,6 @@ import UserSignUp from "./components/UserSignUp";
 import CreateCourse from "./components/CreateCourse";
 import UpdateCourse from "./components/UpdateCourse";
 import UserSignOut from "./components/UserSignOut";
-
 export default () => {
   return (
     <BrowserRouter>
