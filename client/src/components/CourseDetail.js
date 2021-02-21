@@ -1,50 +1,55 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../Context";
 import { Link, useHistory } from "react-router-dom";
+import { Context } from "../Context";
 
-export default function CourseDetail(props) {
-  const [course, setCourse] = useState({});
-  const [materials, setMaterials] = useState([]);
-  const [name, setName] = useState("");
-  const [userId, setUserId] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-  const { data, authenticatedUser, password1, actions } = useContext(Context);
+export default () => {
+  const { data, authenticatedUser, userPassword } = useContext(Context);
   const history = useHistory();
 
+  const [userId, setUserId] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+
+  const [course, setCourse] = useState({});
+  const [materials, setMaterials] = useState([]);
+  const [userName, setUserName] = useState("");
+
   useEffect(async () => {
-    const response = await data.getCourse(props.location.state.courseId);
-    const course = response.course;
-    let items;
-    if (course.materialsNeeded) {
-      if (course.materialsNeeded.includes("*")) {
-        items = course.materialsNeeded.split("*").filter((item) => item);
-        setMaterials((prevMaterials) => [...prevMaterials, ...items]);
+    try {
+      const response = await data.getCourse(window.location.pathname);
+      const course = response.course;
+      const user = course.user;
+      let items;
+
+      setCourse(course);
+      setUserName(`${user.firstName} ${user.lastName}`);
+      setUserId(user.id);
+      setUserEmail(user.emailAddress);
+
+      if (course.materialsNeeded) {
+        if (course.materialsNeeded.includes("*")) {
+          items = course.materialsNeeded.split("*").filter((item) => item);
+          setMaterials((prevMaterials) => [...prevMaterials, ...items]);
+        }
+      } else {
+        items = course.materialsNeeded;
+        setMaterials((prevMaterials) => [...prevMaterials, items]);
       }
-    } else {
-      items = course.materialsNeeded;
-      setMaterials((prevMaterials) => [...prevMaterials, items]);
+    } catch (err) {
+      history.push("/notfound");
     }
-    setCourse(course);
-    setName(`${course.user.firstName} ${course.user.lastName}`);
-    setUserId(course.user.id);
-    setUserEmail(course.user.emailAddress);
-    setUserPassword(password1);
   }, []);
 
   const deleteCourse = () => {
-    data.deleteCourse(course.id, userEmail, userPassword).then((err) => {
-      if (err.length) {
-        console.log(err);
-      } else {
+    data
+      .deleteCourse(course.id, userEmail, userPassword)
+      .then((res) => {
+        console.log(res);
         history.push("/");
-      }
-    });
-  };
-
-  const updateCourse = () => {
-    actions.getCourse(course);
-    history.push(`/courses/${course.id}/update`);
+      })
+      .catch((err) => {
+        console.error(err);
+        history.push("/error");
+      });
   };
 
   return (
@@ -55,12 +60,12 @@ export default function CourseDetail(props) {
             {authenticatedUser && userId == authenticatedUser.user.id ? (
               <React.Fragment>
                 <span>
-                  <button
+                  <Link
                     className="button update-btn"
-                    onClick={() => updateCourse()}
+                    to={`/courses/${course.id}/update`}
                   >
                     Update Course
-                  </button>
+                  </Link>
                   <button
                     className="button delete-btn"
                     onClick={() => deleteCourse()}
@@ -81,7 +86,7 @@ export default function CourseDetail(props) {
           <div className="course--header">
             <h4 className="course--label">Course</h4>
             <h3 className="course--title">{course.title}</h3>
-            <p>By {name} </p>
+            <p>By {userName} </p>
           </div>
           <div className="course--description">
             <p>{course.description}</p>
@@ -108,4 +113,4 @@ export default function CourseDetail(props) {
       </div>
     </React.Fragment>
   );
-}
+};

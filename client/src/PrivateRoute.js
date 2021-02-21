@@ -1,27 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { Consumer } from "./Context";
+import { Context } from "./Context";
 
 export default ({ component: Component, ...rest }) => {
+  const { authenticatedUser } = useContext(Context);
   return (
-    <Consumer>
-      {(context) => (
-        <Route
-          {...rest}
-          render={(props) =>
-            context.authenticatedUser ? (
-              <Component {...props} />
-            ) : (
-              <Redirect
-                to={{
-                  pathname: "/sign-in",
-                  state: { from: props.location },
-                }}
-              />
-            )
-          }
-        />
-      )}
-    </Consumer>
+    <Route
+      {...rest}
+      render={(props) =>
+        authenticatedUser ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/sign-in",
+              state: { from: props.location },
+            }}
+          />
+        )
+      }
+    />
   );
 };

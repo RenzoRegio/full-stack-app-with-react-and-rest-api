@@ -7,8 +7,8 @@ export const Context = React.createContext();
 export class Provider extends Component {
   state = {
     authenticatedUser: Cookies.getJSON("authenticatedUser") || null,
-    password1: null,
-    course: null,
+    userPassword: Cookies.getJSON("userPassword") || null,
+    courseList: [],
   };
 
   constructor() {
@@ -16,12 +16,14 @@ export class Provider extends Component {
     this.data = new Data();
   }
 
+  componentDidMount() {
+    this.getAllCourses();
+  }
   render() {
-    const { authenticatedUser, password1, course } = this.state;
+    const { authenticatedUser, userPassword } = this.state;
     const value = {
       authenticatedUser,
-      password1,
-      course,
+      userPassword,
       data: this.data,
       actions: {
         signIn: this.signIn,
@@ -36,13 +38,23 @@ export class Provider extends Component {
     );
   }
 
+  getAllCourses = async () => {
+    const list = await this.data.getCourses();
+    list.courses.map((course) => {
+      this.setState({
+        courseList: [...this.state.courseList, course.id],
+      });
+    });
+  };
+
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password);
     if (user !== null) {
       this.setState(() => {
-        return { authenticatedUser: user, password1: password };
+        return { authenticatedUser: user, password };
       });
       Cookies.set("authenticatedUser", JSON.stringify(user), { expires: 1 });
+      Cookies.set("userPassword", password, { expires: 1 });
     }
     return user;
   };
@@ -50,12 +62,7 @@ export class Provider extends Component {
   signOut = () => {
     this.setState({ authenticatedUser: null });
     Cookies.remove("authenticatedUser");
-  };
-
-  getCourse = (courseObj) => {
-    this.setState({
-      course: courseObj,
-    });
+    Cookies.remove("userPassword");
   };
 
   DisplayErrors = ({ errorsObject }) => {

@@ -2,9 +2,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { Context } from "../Context";
 import { Link } from "react-router-dom";
 
-export default function Courses() {
+export default () => {
   const { data, authenticatedUser } = useContext(Context);
   const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    displayCourses();
+  }, []);
 
   async function displayCourses() {
     const coursesContainer = await data.getCourses();
@@ -13,22 +17,13 @@ export default function Courses() {
     });
   }
 
-  useEffect(async () => {
-    displayCourses();
-  }, []);
-
   return (
     <div className="bounds">
       {courses.map((course, i) => (
         <div className="grid-33" key={i}>
           <Link
             className="course--module course--link"
-            to={{
-              pathname: `/courses/${course.id}`,
-              state: {
-                courseId: course.id,
-              },
-            }}
+            to={`/courses/${course.id}`}
           >
             <h4 className="course--label">Course</h4>
             <h3 className="course--title">{course.title}</h3>
@@ -61,4 +56,4 @@ export default function Courses() {
       ) : null}
     </div>
   );
-}
+};

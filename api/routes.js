@@ -129,7 +129,6 @@ router.delete(
   authenticateUser,
   asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
-    console.log(course);
     if (course.userId === req.currentUser.id) {
       try {
         await course.destroy();

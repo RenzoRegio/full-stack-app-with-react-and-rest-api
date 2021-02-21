@@ -3,31 +3,45 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 export default function UpdateCourse() {
-  const { course, data, password1, authenticatedUser } = useContext(Context);
-  const [currentCourse, setCurrentCourse] = useState(course);
-  const [title, setTitle] = useState(currentCourse.title);
-  const [description, setDescription] = useState(currentCourse.description);
-  const [estimatedTime, setEstimatedTime] = useState(
-    currentCourse.estimatedTime
-  );
-  const [materialsNeeded, setMaterialsNeeded] = useState(
-    currentCourse.materialsNeeded
-  );
   const history = useHistory();
+  const { data, authenticatedUser, userPassword } = useContext(Context);
 
-  const change = (e) => {
-    if (e.target.name === "title") {
-      setTitle(e.target.value);
-    } else if (e.target.name === "description") {
-      setDescription(e.target.value);
-    } else if (e.target.name === "estimatedTime") {
-      setEstimatedTime(e.target.value);
-    } else if (e.target.name === "materialsNeeded") {
-      setMaterialsNeeded(e.target.value);
-    }
-  };
+  const [title, setTitle] = useState("");
+  const [currentCourse, setCurrentCourse] = useState({});
+  const [description, setDescription] = useState("");
+  const [estimatedTime, setEstimatedTime] = useState("");
+  const [materialsNeeded, setMaterialsNeeded] = useState("");
+  let emailAddress;
 
-  const emailAddress = authenticatedUser.user.emailAddress;
+  if (authenticatedUser) {
+    emailAddress = authenticatedUser.user.emailAddress;
+  }
+
+  useEffect(async () => {
+    let path = window.location.pathname;
+    path = path.replace("/update", "");
+
+    await data
+      .getCourse(path)
+      .then((response) => {
+        if (
+          !authenticatedUser ||
+          response.course.user.id !== authenticatedUser.user.id
+        ) {
+          history.push("/forbidden");
+        } else {
+          setTitle(response.course.title);
+          setDescription(response.course.description);
+          setEstimatedTime(response.course.estimatedTime);
+          setMaterialsNeeded(response.course.materialsNeeded);
+          setCurrentCourse(response.course);
+        }
+      })
+      .catch((error) => {
+        history.push("/notfound");
+      });
+  }, []);
+
   const updateCourseData = {
     title,
     description,
@@ -35,16 +49,40 @@ export default function UpdateCourse() {
     materialsNeeded,
   };
 
+  const change = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "title") {
+      setTitle(value);
+    } else if (name === "description") {
+      setDescription(value);
+    } else if (name === "estimatedTime") {
+      setEstimatedTime(value);
+    } else if (name === "materialsNeeded") {
+      setMaterialsNeeded(value);
+    }
+  };
+
   const submit = (e) => {
     e.preventDefault();
+
     data
-      .updateCourse(course.id, updateCourseData, emailAddress, password1)
+      .updateCourse(
+        currentCourse.id,
+        updateCourseData,
+        emailAddress,
+        userPassword
+      )
       .then((err) => {
         if (err.length) {
           console.log(err);
         } else {
           history.push(`/`);
         }
+      })
+      .catch((err) => {
+        console.error(err);
+        history.push("/error");
       });
   };
 
@@ -67,7 +105,7 @@ export default function UpdateCourse() {
                   onChange={change}
                 />
               </div>
-              <p>{`${authenticatedUser.user.firstName} ${authenticatedUser.user.lastName}`}</p>
+              {/* <p>{`${authenticatedUser.user.firstName} ${authenticatedUser.user.lastName}`}</p> */}
             </div>
             <div className="course--description">
               <div>
@@ -120,9 +158,9 @@ export default function UpdateCourse() {
             <Link
               className="button button-secondary delete-btn"
               to={{
-                pathname: `/courses/${course.id}`,
+                pathname: `/courses/${currentCourse.id}`,
                 state: {
-                  courseId: course.id,
+                  courseId: currentCourse.id,
                 },
               }}
             >

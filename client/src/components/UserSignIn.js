@@ -2,7 +2,7 @@ import { Link, useHistory } from "react-router-dom";
 import React, { useState, useContext } from "react";
 import { Context } from "../Context";
 
-export default function UserSignIn() {
+export default function UserSignIn(props) {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
@@ -19,13 +19,16 @@ export default function UserSignIn() {
 
   const submit = (e) => {
     e.preventDefault();
+    const { from } = props.location.state || {
+      from: { pathname: "/" },
+    };
     actions
       .signIn(emailAddress, password)
       .then((user) => {
         if (!user) {
           setErrors(["Sign-in was unsuccessful"]);
         } else {
-          history.push("/");
+          history.push(from);
           console.log(`SUCCESS! ${emailAddress} successfully logged in`);
         }
       })

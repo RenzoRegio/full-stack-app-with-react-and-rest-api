@@ -25,10 +25,6 @@ export default class Data {
       options.headers["Authorization"] = `Basic ${encodedCredentials}`;
     }
 
-    // if (action) {
-    //   options.headers["Authorization"] = `Basic ${credentials.password}`;
-    // }
-
     return fetch(url, options);
   }
 
@@ -37,9 +33,15 @@ export default class Data {
     return response.json().then((data) => data);
   }
 
-  async getCourse(courseId) {
-    const response = await this.api(`/courses/${courseId}`);
-    return response.json().then((data) => data);
+  async getCourse(path) {
+    const response = await this.api(path);
+    if (response.status === 200) {
+      return response.json().then((data) => data);
+    } else if (response.status === 400) {
+      return null;
+    } else {
+      return new Error();
+    }
   }
 
   async getUser(emailAddress, password) {
@@ -74,6 +76,7 @@ export default class Data {
       emailAddress,
       password,
     });
+    console.log(response);
     if (response.status === 201) {
       return [];
     } else if (response.status === 400) {
@@ -102,6 +105,12 @@ export default class Data {
     });
     if (response.status === 204) {
       return [];
+    } else if (response.status === 400) {
+      return response.json().then((data) => {
+        return data.errors;
+      });
+    } else if (response.status === 403) {
+      return "Not authenticated";
     }
   }
 }

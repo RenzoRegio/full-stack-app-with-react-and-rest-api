@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../Context";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { Context } from "../Context";
 
 export default function CreateCourse() {
-  const { data, authenticatedUser, password1, actions } = useContext(Context);
+  const history = useHistory();
+  const { data, authenticatedUser, actions, userPassword } = useContext(
+    Context
+  );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
@@ -12,21 +15,24 @@ export default function CreateCourse() {
   const [userEmail, setUserEmail] = useState(
     authenticatedUser.user.emailAddress
   );
-  const [userPassword, setUserPassword] = useState(password1);
-  const history = useHistory();
   const [errors, setErrors] = useState([]);
   const DisplayErrors = actions.DisplayErrors;
 
+  const titleBox = document.querySelector("#title");
+  const descriptionBox = document.querySelector("#description");
+
   const change = (e) => {
     e.preventDefault();
-    if (e.target.name === "title") {
-      setTitle(e.target.value);
-    } else if (e.target.name === "description") {
-      setDescription(e.target.value);
-    } else if (e.target.name === "estimatedTime") {
-      setEstimatedTime(e.target.value);
-    } else if (e.target.name === "materialsNeeded") {
-      setMaterialsNeeded(e.target.value);
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "title") {
+      setTitle(value);
+    } else if (name === "description") {
+      setDescription(value);
+    } else if (name === "estimatedTime") {
+      setEstimatedTime(value);
+    } else if (name === "materialsNeeded") {
+      setMaterialsNeeded(value);
     }
   };
 
@@ -40,47 +46,37 @@ export default function CreateCourse() {
       userId,
     };
 
-    data.createCourse(course, userEmail, userPassword).then((errors) => {
-      if (errors.length) {
-        setErrors(errors);
-        const errorsList = document.querySelectorAll(".error");
-        checkErrors(errorsList);
-        const form = document.querySelector("form");
-        form.addEventListener("submit", () => {
-          validateErrors(errorsList);
-        });
-      } else {
-        history.push("/");
+    const validateErrors = (errorsList, color) => {
+      for (let i = 0; i < errorsList.length; i++) {
+        const error = errorsList[i].textContent.toLowerCase();
+        if (error.includes("title")) {
+          titleBox.style.border = `2px solid ${color}`;
+        }
+        if (error.includes("description")) {
+          descriptionBox.style.border = `2px solid ${color}`;
+        }
       }
-    });
-  };
+    };
 
-  const checkErrors = (errorsList) => {
-    const titleBox = document.querySelector("#title");
-    const descriptionBox = document.querySelector("#description");
-    for (let i = 0; i < errorsList.length; i++) {
-      const error = errorsList[i].textContent.toLowerCase();
-      if (error.includes("title")) {
-        titleBox.style.border = "2px solid red";
-      }
-      if (error.includes("description")) {
-        descriptionBox.style.border = "2px solid red";
-      }
-    }
-  };
-
-  const validateErrors = (errorsList) => {
-    const titleBox = document.querySelector("#title");
-    const descriptionBox = document.querySelector("#description");
-    for (let i = 0; i < errorsList.length; i++) {
-      const error = errorsList[i].textContent.toLowerCase();
-      if (!error.includes("title")) {
-        titleBox.style.border = "2px solid green";
-      }
-      if (!error.includes("description")) {
-        descriptionBox.style.border = "2px solid green";
-      }
-    }
+    data
+      .createCourse(course, userEmail, userPassword)
+      .then((errors) => {
+        if (errors.length) {
+          setErrors(errors);
+          const form = document.querySelector("form");
+          const errorsList = document.querySelectorAll(".error");
+          validateErrors(errorsList, "red");
+          form.addEventListener("submit", () => {
+            validateErrors(errorsList, "green");
+          });
+        } else {
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        history.push("/error");
+      });
   };
 
   return (
