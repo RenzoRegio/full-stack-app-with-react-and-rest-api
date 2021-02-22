@@ -1,13 +1,13 @@
-import { Link, useHistory } from "react-router-dom";
 import React, { useState, useContext } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { Context } from "../Context";
 
 export default (props) => {
+  const { actions } = useContext(Context);
+  const history = useHistory();
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
-  const { actions } = useContext(Context);
-  const history = useHistory();
   const DisplayErrors = actions.DisplayErrors;
 
   /**
@@ -26,7 +26,7 @@ export default (props) => {
   };
 
   /**
-   *
+   * Signs the user in and redirects the user to either the / route or the route from props.location.state (retrived from Routes configured as PrivateRoutes)
    * @param {Object} e - Event object.
    */
 
@@ -72,7 +72,7 @@ export default (props) => {
             <input
               id="password"
               name="password"
-              type="text"
+              type="password"
               placeholder="Password"
               value={password}
               onChange={change}
@@ -83,7 +83,7 @@ export default (props) => {
             <button className="button" type="submit">
               Sign In
             </button>
-            <Link to="/courses">
+            <Link to="/">
               <button className="button button-secondary">Cancel</button>
             </Link>
           </div>

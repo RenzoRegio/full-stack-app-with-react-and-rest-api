@@ -6,6 +6,7 @@ export default () => {
   const { data, actions } = useContext(Context);
   const history = useHistory();
 
+  //DOM for styling the errors (if any)
   const DisplayErrors = actions.DisplayErrors;
   const form = document.querySelector("form");
   const firstNameBox = document.querySelector("#firstName");
@@ -13,16 +14,21 @@ export default () => {
   const emailBox = document.querySelector("#emailAddress");
   const passwordBox = document.querySelector("#password");
 
+  //Information for the User
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
 
+  /**
+   * Sets the value for the different states of the user object - firstName, lastName, emailAddress and password.
+   * @param {Object} e - Event object.
+   */
+
   const change = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-
     if (name === "firstName") {
       setFirstName(value);
     } else if (name === "lastName") {
@@ -34,6 +40,11 @@ export default () => {
     }
   };
 
+  /**
+   * Creates and signs a user in. If there are any errors, it validates and displays the errors before creating the user and redirecting to the / route.
+   * @param {Object} e - Event object.
+   */
+
   const submit = (e) => {
     e.preventDefault();
     const user = { firstName, lastName, emailAddress, password };
@@ -44,7 +55,8 @@ export default () => {
           setErrors(err);
           const errorsList = document.querySelectorAll("li");
           validateErrors(errorsList, "red");
-          form.addEventListener("change", () => {
+          form.addEventListener("change", (e) => {
+            e.preventDefault();
             validateErrors(errorsList, "green");
           });
         } else {
@@ -58,6 +70,12 @@ export default () => {
       });
   };
 
+  /**
+   * Adds a border style to the input specified if the error associated is included in the errorList array.
+   * @param {Array} errorsList - An array containing the errors retrieved from the database validation.
+   * @param {String} color - Determines the color to style the border of the input.
+   */
+
   const validateErrors = (errorsList, color) => {
     for (let i = 0; i < errorsList.length; i++) {
       const error = errorsList[i].textContent.toLowerCase();
@@ -70,7 +88,7 @@ export default () => {
       if (error.includes("email")) {
         emailBox.style.border = `2px solid ${color}`;
       }
-      if (error.includes("password")) {
+      if (error.includes("characters")) {
         passwordBox.style.border = `2px solid ${color}`;
       }
     }
@@ -131,7 +149,7 @@ export default () => {
               <button className="button" type="submit">
                 Sign Up
               </button>
-              <Link to="/courses">
+              <Link to="/">
                 <button className="button button-secondary">Cancel</button>
               </Link>
             </div>

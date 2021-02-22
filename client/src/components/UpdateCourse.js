@@ -104,7 +104,8 @@ export default () => {
           setErrors(err);
           const errorList = document.querySelectorAll(".error");
           validateErrors(errorList, "red");
-          form.addEventListener("submit", () => {
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
             validateErrors(errorList, "green");
           });
         } else {
@@ -117,8 +118,8 @@ export default () => {
       });
 
     /**
-     * Adds a border style to the input specified if the error associated is included in the errorList list.
-     * @param {List} errorsList - A list containing the errors retrieved from the database validation.
+     * Adds a border style to the input specified if the error associated is included in the errorList array.
+     * @param {Array} errorsList - An array containing the errors retrieved from the database validation.
      * @param {String} color - Determines the color to style the border of the input.
      */
 

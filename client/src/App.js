@@ -17,10 +17,13 @@ export default () => {
     <BrowserRouter>
       <Header />
       <Switch>
-        <Redirect exact path="/" to="/courses" />
-        <Route exact path="/courses" component={Courses} />
+        <Route exact path="/" component={Courses} />
         <PrivateRoute exact path="/courses/create" component={CreateCourse} />
-        <Route exact path="/courses/:id/update" component={UpdateCourse} />
+        <PrivateRoute
+          exact
+          path="/courses/:id/update"
+          component={UpdateCourse}
+        />
         <Route exact path="/courses/:id" component={CourseDetail} />
         <Route exact path="/sign-in" component={UserSignIn} />
         <Route exact path="/sign-up" component={UserSignUp} />

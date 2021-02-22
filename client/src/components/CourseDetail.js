@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Context } from "../Context";
+import ReactMarkdown from "react-markdown";
 
 export default () => {
   const { data, authenticatedUser, userPassword } = useContext(Context);
@@ -21,22 +22,15 @@ export default () => {
       const response = await data.getCourse(window.location.pathname);
       const course = response.course;
       const user = course.user;
-      let items;
 
       setCourse(course);
       setUserName(`${user.firstName} ${user.lastName}`);
       setUserId(user.id);
       setUserEmail(user.emailAddress);
-
-      if (course.materialsNeeded) {
-        if (course.materialsNeeded.includes("*")) {
-          items = course.materialsNeeded.split("*").filter((item) => item);
-          setMaterials((prevMaterials) => [...prevMaterials, ...items]);
-        }
-      } else {
-        items = course.materialsNeeded;
-        setMaterials((prevMaterials) => [...prevMaterials, items]);
-      }
+      const items = course.materialsNeeded
+        .split(/\n/)
+        .map((item) => `- ${item}`);
+      setMaterials((prevMaterials) => [...prevMaterials, ...items]);
     } catch (err) {
       history.push("/notfound");
     }
@@ -96,7 +90,7 @@ export default () => {
             <p>By {userName} </p>
           </div>
           <div className="course--description">
-            <p>{course.description}</p>
+            <ReactMarkdown children={course.description} />
           </div>
         </div>
       </div>
@@ -110,9 +104,9 @@ export default () => {
             <li className="course--stats--list--item">
               <h4>Materials Needed</h4>
               <ul>
-                {materials.map((material, i) => (
-                  <li key={i}>{material}</li>
-                ))}
+                {materials.map((material, i) => {
+                  return <ReactMarkdown key={i} children={material} />;
+                })}
               </ul>
             </li>
           </ul>
