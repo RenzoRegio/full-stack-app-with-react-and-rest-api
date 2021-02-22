@@ -842,3 +842,42 @@ button:hover {
   display: flex;
   justify-content: center;
 }
+
+.error-container {
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-container > h1 {
+  font-size: 100px;
+  color: #444;
+  text-shadow: 1px 0px 1px #ccc, 0px 1px 1px #eee, 2px 1px 1px #ccc,
+    1px 2px 1px #eee, 3px 2px 1px #ccc, 2px 3px 1px #eee, 4px 3px 1px #ccc,
+    3px 4px 1px #eee, 5px 4px 1px #ccc, 4px 5px 1px #eee, 6px 5px 1px #ccc,
+    5px 6px 1px #eee, 7px 6px 1px #ccc;
+  margin-bottom: 80px;
+}
+
+.error-container > p {
+  font-size: 20px;
+}
+
+.home-btn {
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid black;
+  font-weight: bolder;
+  box-shadow: 0px 4px;
+  transition: box-shadow 0.5s ease-in-out;
+}
+
+.home-btn:hover {
+  background-color: teal;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 3px;
+}

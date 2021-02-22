@@ -7,22 +7,32 @@ export default function CreateCourse() {
   const { data, authenticatedUser, actions, userPassword } = useContext(
     Context
   );
+
+  //Information for the Course
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
   const [materialsNeeded, setMaterialsNeeded] = useState("");
+  const [errors, setErrors] = useState([]);
+  const DisplayErrors = actions.DisplayErrors;
+
+  //Information for the User
   const [userId, setUserId] = useState(`${authenticatedUser.user.id}`);
   const [userEmail, setUserEmail] = useState(
     authenticatedUser.user.emailAddress
   );
-  const [errors, setErrors] = useState([]);
-  const DisplayErrors = actions.DisplayErrors;
 
+  //DOM to display error styles
+  const form = document.querySelector("form");
   const titleBox = document.querySelector("#title");
   const descriptionBox = document.querySelector("#description");
 
+  /**
+   * Sets the value for the different states of the Course object - title, description, estimatedTime and materialsNeeded.
+   * @param {Object} e - Event object.
+   */
+
   const change = (e) => {
-    e.preventDefault();
     const name = e.target.name;
     const value = e.target.value;
     if (name === "title") {
@@ -36,6 +46,11 @@ export default function CreateCourse() {
     }
   };
 
+  /**
+   * Creates a course and if there are any errors, it validates and displays the errors before creating the course and returning home.
+   * @param {Object} e - Event object.
+   */
+
   const submit = (e) => {
     e.preventDefault();
     const course = {
@@ -46,24 +61,11 @@ export default function CreateCourse() {
       userId,
     };
 
-    const validateErrors = (errorsList, color) => {
-      for (let i = 0; i < errorsList.length; i++) {
-        const error = errorsList[i].textContent.toLowerCase();
-        if (error.includes("title")) {
-          titleBox.style.border = `2px solid ${color}`;
-        }
-        if (error.includes("description")) {
-          descriptionBox.style.border = `2px solid ${color}`;
-        }
-      }
-    };
-
     data
       .createCourse(course, userEmail, userPassword)
       .then((errors) => {
         if (errors.length) {
           setErrors(errors);
-          const form = document.querySelector("form");
           const errorsList = document.querySelectorAll(".error");
           validateErrors(errorsList, "red");
           form.addEventListener("submit", () => {
@@ -77,6 +79,24 @@ export default function CreateCourse() {
         console.error(err);
         history.push("/error");
       });
+
+    /**
+     * Adds a border style to the input specified if the error associated is included in the errorList list.
+     * @param {List} errorsList - A list containing the errors retrieved from the database validation.
+     * @param {String} color - Determines the color to style the border of the input.
+     */
+
+    const validateErrors = (errorsList, color) => {
+      for (let i = 0; i < errorsList.length; i++) {
+        const error = errorsList[i].textContent.toLowerCase();
+        if (error.includes("title")) {
+          titleBox.style.border = `2px solid ${color}`;
+        }
+        if (error.includes("description")) {
+          descriptionBox.style.border = `2px solid ${color}`;
+        }
+      }
+    };
   };
 
   return (

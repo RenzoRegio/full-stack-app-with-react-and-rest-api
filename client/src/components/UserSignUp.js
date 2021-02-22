@@ -1,43 +1,51 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../Context";
+import React, { useState, useContext } from "react";
 import { useHistory, Link } from "react-router-dom";
+import { Context } from "../Context";
 
-export default function UserSignUp() {
+export default () => {
   const { data, actions } = useContext(Context);
   const history = useHistory();
+
+  const DisplayErrors = actions.DisplayErrors;
+  const form = document.querySelector("form");
+  const firstNameBox = document.querySelector("#firstName");
+  const lastNameBox = document.querySelector("#lastName");
+  const emailBox = document.querySelector("#emailAddress");
+  const passwordBox = document.querySelector("#password");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
-  const DisplayErrors = actions.DisplayErrors;
 
   const change = (e) => {
-    if (e.target.name === "firstName") {
-      setFirstName(e.target.value);
-    } else if (e.target.name === "lastName") {
-      setLastName(e.target.value);
-    } else if (e.target.name === "emailAddress") {
-      setEmailAddress(e.target.value);
-    } else if (e.target.name === "password") {
-      setPassword(e.target.value);
+    const name = e.target.name;
+    const value = e.target.value;
+
+    if (name === "firstName") {
+      setFirstName(value);
+    } else if (name === "lastName") {
+      setLastName(value);
+    } else if (name === "emailAddress") {
+      setEmailAddress(value);
+    } else if (name === "password") {
+      setPassword(value);
     }
   };
 
   const submit = (e) => {
     e.preventDefault();
     const user = { firstName, lastName, emailAddress, password };
-    let errorsList;
     data
       .createUser(user)
       .then((err) => {
         if (err.length) {
           setErrors(err);
-          errorsList = document.querySelectorAll("li");
-          const form = document.querySelector("form");
-          checkErrors(errorsList);
+          const errorsList = document.querySelectorAll("li");
+          validateErrors(errorsList, "red");
           form.addEventListener("change", () => {
-            validateErrors(errorsList);
+            validateErrors(errorsList, "green");
           });
         } else {
           actions.signIn(emailAddress, password);
@@ -46,51 +54,24 @@ export default function UserSignUp() {
       })
       .catch((err) => {
         console.log(err);
+        history.push("/error");
       });
   };
 
-  const checkErrors = (errorsList) => {
-    const firstNameBox = document.querySelector("#firstName");
-    const lastNameBox = document.querySelector("#lastName");
-    const emailBox = document.querySelector("#emailAddress");
-    const passwordBox = document.querySelector("#password");
-
+  const validateErrors = (errorsList, color) => {
     for (let i = 0; i < errorsList.length; i++) {
       const error = errorsList[i].textContent.toLowerCase();
       if (error.includes("first")) {
-        firstNameBox.style.border = "2px solid red";
+        firstNameBox.style.border = `2px solid ${color}`;
       }
       if (error.includes("last")) {
-        lastNameBox.style.border = "2px solid red";
+        lastNameBox.style.border = `2px solid ${color}`;
       }
       if (error.includes("email")) {
-        emailBox.style.border = "2px solid red";
+        emailBox.style.border = `2px solid ${color}`;
       }
       if (error.includes("password")) {
-        passwordBox.style.border = "2px solid red";
-      }
-    }
-  };
-
-  const validateErrors = (errorsList) => {
-    const firstNameBox = document.querySelector("#firstName");
-    const lastNameBox = document.querySelector("#lastName");
-    const emailBox = document.querySelector("#emailAddress");
-    const passwordBox = document.querySelector("#password");
-
-    for (let i = 0; i < errorsList.length; i++) {
-      const error = errorsList[i].textContent.toLowerCase();
-      if (!error.includes("first")) {
-        firstNameBox.style.border = "2px solid green";
-      }
-      if (!error.includes("last")) {
-        lastNameBox.style.border = "2px solid green";
-      }
-      if (!error.includes("email")) {
-        emailBox.style.border = "2px solid green";
-      }
-      if (!error.includes("password")) {
-        passwordBox.style.border = "2px solid green";
+        passwordBox.style.border = `2px solid ${color}`;
       }
     }
   };
@@ -167,4 +148,4 @@ export default function UserSignUp() {
       </div>
     </div>
   );
-}
+};

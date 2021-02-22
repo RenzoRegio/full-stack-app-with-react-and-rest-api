@@ -1,20 +1,30 @@
 import React, { useEffect, useState, useContext } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { Context } from "../Context";
-import { Link } from "react-router-dom";
 
 export default () => {
   const { data, authenticatedUser } = useContext(Context);
+  const history = useHistory();
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     displayCourses();
   }, []);
 
+  /**
+   * Goes through the courses array retrieved from the database and sets the courses state which then displays all the courses in the return statement below.
+   */
+
   async function displayCourses() {
-    const coursesContainer = await data.getCourses();
-    coursesContainer.courses.map((newCourse) => {
-      setCourses((prevCourses) => [...prevCourses, newCourse]);
-    });
+    try {
+      const coursesContainer = await data.getCourses();
+      coursesContainer.courses.map((newCourse) => {
+        setCourses((prevCourses) => [...prevCourses, newCourse]);
+      });
+    } catch (err) {
+      console.log(err);
+      history.pushState("/error");
+    }
   }
 
   return (

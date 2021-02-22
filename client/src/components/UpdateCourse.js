@@ -2,39 +2,55 @@ import { Context } from "../Context";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-export default function UpdateCourse() {
+export default () => {
   const history = useHistory();
-  const { data, authenticatedUser, userPassword } = useContext(Context);
+  const { data, actions, authenticatedUser, userPassword } = useContext(
+    Context
+  );
 
+  //DOM to display error styles
+  const form = document.querySelector("form");
+  const titleBox = document.querySelector("#title");
+  const descriptionBox = document.querySelector("#description");
+
+  //Information for the Course
   const [title, setTitle] = useState("");
-  const [currentCourse, setCurrentCourse] = useState({});
   const [description, setDescription] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
   const [materialsNeeded, setMaterialsNeeded] = useState("");
-  let emailAddress;
+  const [currentCourse, setCurrentCourse] = useState({});
+  const [errors, setErrors] = useState([]);
+  const DisplayErrors = actions.DisplayErrors;
 
+  //Sets the emailAddress if authenticatedUser is true
+  let emailAddress;
   if (authenticatedUser) {
     emailAddress = authenticatedUser.user.emailAddress;
   }
 
-  useEffect(async () => {
+  useEffect(() => {
+    //Retrieves the path from the URI
     let path = window.location.pathname;
     path = path.replace("/update", "");
 
-    await data
+    //Retrieves the course using the path variable
+    data
       .getCourse(path)
       .then((response) => {
+        const course = response.course;
         if (
           !authenticatedUser ||
-          response.course.user.id !== authenticatedUser.user.id
+          course.user.id !== authenticatedUser.user.id
         ) {
+          //If the user is not authenticated or the user's ID is not equal to the course's user's ID.
           history.push("/forbidden");
         } else {
-          setTitle(response.course.title);
-          setDescription(response.course.description);
-          setEstimatedTime(response.course.estimatedTime);
-          setMaterialsNeeded(response.course.materialsNeeded);
-          setCurrentCourse(response.course);
+          //If the user is authenticated and the user's ID is equal to the course's user's ID then the following states will be set.
+          setTitle(course.title);
+          setDescription(course.description);
+          setEstimatedTime(course.estimatedTime);
+          setMaterialsNeeded(course.materialsNeeded);
+          setCurrentCourse(course);
         }
       })
       .catch((error) => {
@@ -48,6 +64,11 @@ export default function UpdateCourse() {
     estimatedTime,
     materialsNeeded,
   };
+
+  /**
+   * Sets the value for the different states of the Course object - title, description, estimatedTime and materialsNeeded.
+   * @param {Object} e - Event object.
+   */
 
   const change = (e) => {
     const name = e.target.name;
@@ -63,6 +84,11 @@ export default function UpdateCourse() {
     }
   };
 
+  /**
+   * Updates the current course and if there are any errors, it validates and displays the errors before updating the course and returning home.
+   * @param {Object} e - Event object.
+   */
+
   const submit = (e) => {
     e.preventDefault();
 
@@ -75,7 +101,12 @@ export default function UpdateCourse() {
       )
       .then((err) => {
         if (err.length) {
-          console.log(err);
+          setErrors(err);
+          const errorList = document.querySelectorAll(".error");
+          validateErrors(errorList, "red");
+          form.addEventListener("submit", () => {
+            validateErrors(errorList, "green");
+          });
         } else {
           history.push(`/`);
         }
@@ -84,12 +115,31 @@ export default function UpdateCourse() {
         console.error(err);
         history.push("/error");
       });
+
+    /**
+     * Adds a border style to the input specified if the error associated is included in the errorList list.
+     * @param {List} errorsList - A list containing the errors retrieved from the database validation.
+     * @param {String} color - Determines the color to style the border of the input.
+     */
+
+    const validateErrors = (errorsList, color) => {
+      for (let i = 0; i < errorsList.length; i++) {
+        const error = errorsList[i].textContent.toLowerCase();
+        if (error.includes("title")) {
+          titleBox.style.border = `2px solid ${color}`;
+        }
+        if (error.includes("description")) {
+          descriptionBox.style.border = `2px solid ${color}`;
+        }
+      }
+    };
   };
 
   return (
     <div className="bounds course--detail">
       <h1>Update Course</h1>
       <div>
+        <DisplayErrors errorsObject={errors} />
         <form onSubmit={submit}>
           <div className="grid-66">
             <div className="course--header">
@@ -105,7 +155,7 @@ export default function UpdateCourse() {
                   onChange={change}
                 />
               </div>
-              {/* <p>{`${authenticatedUser.user.firstName} ${authenticatedUser.user.lastName}`}</p> */}
+              <p>{`${authenticatedUser.user.firstName} ${authenticatedUser.user.lastName}`}</p>
             </div>
             <div className="course--description">
               <div>
@@ -171,4 +221,4 @@ export default function UpdateCourse() {
       </div>
     </div>
   );
-}
+};

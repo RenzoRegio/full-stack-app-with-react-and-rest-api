@@ -8,7 +8,6 @@ export class Provider extends Component {
   state = {
     authenticatedUser: Cookies.getJSON("authenticatedUser") || null,
     userPassword: Cookies.getJSON("userPassword") || null,
-    courseList: [],
   };
 
   constructor() {
@@ -16,42 +15,17 @@ export class Provider extends Component {
     this.data = new Data();
   }
 
-  componentDidMount() {
-    this.getAllCourses();
-  }
-  render() {
-    const { authenticatedUser, userPassword } = this.state;
-    const value = {
-      authenticatedUser,
-      userPassword,
-      data: this.data,
-      actions: {
-        signIn: this.signIn,
-        signOut: this.signOut,
-        getCourse: this.getCourse,
-        DisplayErrors: this.DisplayErrors,
-      },
-    };
-
-    return (
-      <Context.Provider value={value}>{this.props.children}</Context.Provider>
-    );
-  }
-
-  getAllCourses = async () => {
-    const list = await this.data.getCourses();
-    list.courses.map((course) => {
-      this.setState({
-        courseList: [...this.state.courseList, course.id],
-      });
-    });
-  };
+  /**
+   * Returns the user object retrieved from the database.
+   * @param {String} emailAddress - Email String that is sent to the data.getUser function which is used to authenticate the user trying to sign in.
+   * @param {String} password - Password String that is sent to the data.getUser function which is used to authenticate the user trying to sign in.
+   */
 
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password);
     if (user !== null) {
       this.setState(() => {
-        return { authenticatedUser: user, password };
+        return { authenticatedUser: user, userPassword: password };
       });
       Cookies.set("authenticatedUser", JSON.stringify(user), { expires: 1 });
       Cookies.set("userPassword", password, { expires: 1 });
@@ -59,12 +33,20 @@ export class Provider extends Component {
     return user;
   };
 
+  /**
+   * Executes the signOut function and reverts the authenticatedUser and userPassword states to null and removes the necessary cookies.
+   */
+
   signOut = () => {
-    this.setState({ authenticatedUser: null });
+    this.setState({ authenticatedUser: null, userPassword: null });
     Cookies.remove("authenticatedUser");
     Cookies.remove("userPassword");
   };
 
+  /**
+   * Displays the errors from the errorsObject - called on the CreateCourse, UpdateCourse SignUp, and SignIn components.
+   * @param {Object} errorsObject - An object containing the errors returned from the database.
+   */
   DisplayErrors = ({ errorsObject }) => {
     if (errorsObject.length) {
       return (
@@ -87,7 +69,24 @@ export class Provider extends Component {
       return null;
     }
   };
+
+  render() {
+    const { authenticatedUser, userPassword } = this.state;
+    const value = {
+      authenticatedUser,
+      userPassword,
+      data: this.data,
+      actions: {
+        signIn: this.signIn,
+        signOut: this.signOut,
+        DisplayErrors: this.DisplayErrors,
+      },
+    };
+
+    return (
+      <Context.Provider value={value}>{this.props.children}</Context.Provider>
+    );
+  }
 }
 
-export const Consumer = Context.Consumer;
 export default Context;

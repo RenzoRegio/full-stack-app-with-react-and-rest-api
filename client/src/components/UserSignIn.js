@@ -2,26 +2,40 @@ import { Link, useHistory } from "react-router-dom";
 import React, { useState, useContext } from "react";
 import { Context } from "../Context";
 
-export default function UserSignIn(props) {
+export default (props) => {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const { actions } = useContext(Context);
   const history = useHistory();
   const DisplayErrors = actions.DisplayErrors;
+
+  /**
+   * Sets the value for the emailAddress and password states.
+   * @param {Object} e - Event object.
+   */
+
   const change = (e) => {
-    if (e.target.name === "emailAddress") {
-      setEmailAddress(e.target.value);
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "emailAddress") {
+      setEmailAddress(value);
     } else {
-      setPassword(e.target.value);
+      setPassword(value);
     }
   };
+
+  /**
+   *
+   * @param {Object} e - Event object.
+   */
 
   const submit = (e) => {
     e.preventDefault();
     const { from } = props.location.state || {
       from: { pathname: "/" },
     };
+
     actions
       .signIn(emailAddress, password)
       .then((user) => {
@@ -29,11 +43,11 @@ export default function UserSignIn(props) {
           setErrors(["Sign-in was unsuccessful"]);
         } else {
           history.push(from);
-          console.log(`SUCCESS! ${emailAddress} successfully logged in`);
         }
       })
       .catch((err) => {
         console.log(err);
+        history.push("/error");
       });
   };
 
@@ -85,4 +99,4 @@ export default function UserSignIn(props) {
       </p>
     </div>
   );
-}
+};

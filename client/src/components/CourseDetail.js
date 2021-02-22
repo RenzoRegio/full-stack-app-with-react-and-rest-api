@@ -6,15 +6,18 @@ export default () => {
   const { data, authenticatedUser, userPassword } = useContext(Context);
   const history = useHistory();
 
+  //Information for the User
   const [userId, setUserId] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
+  //Information for the Course
   const [course, setCourse] = useState({});
   const [materials, setMaterials] = useState([]);
   const [userName, setUserName] = useState("");
 
   useEffect(async () => {
     try {
+      //Retrieves the current course from the URI specified.
       const response = await data.getCourse(window.location.pathname);
       const course = response.course;
       const user = course.user;
@@ -38,6 +41,10 @@ export default () => {
       history.push("/notfound");
     }
   }, []);
+
+  /**
+   * Deletes / Destroys the current course.
+   */
 
   const deleteCourse = () => {
     data
