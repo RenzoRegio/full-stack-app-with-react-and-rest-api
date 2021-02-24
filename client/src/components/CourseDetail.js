@@ -27,9 +27,7 @@ export default () => {
       setUserName(`${user.firstName} ${user.lastName}`);
       setUserId(user.id);
       setUserEmail(user.emailAddress);
-      const items = course.materialsNeeded
-        .split(/\n/)
-        .map((item) => `- ${item}`);
+      const items = course.materialsNeeded.split(/\n/).map((item) => item);
       setMaterials((prevMaterials) => [...prevMaterials, ...items]);
     } catch (err) {
       history.push("/notfound");

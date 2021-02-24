@@ -25,9 +25,9 @@ export default () => {
           component={UpdateCourse}
         />
         <Route exact path="/courses/:id" component={CourseDetail} />
-        <Route exact path="/sign-in" component={UserSignIn} />
-        <Route exact path="/sign-up" component={UserSignUp} />
-        <Route exact path="/sign-out" component={UserSignOut} />
+        <Route exact path="/signin" component={UserSignIn} />
+        <Route exact path="/signup" component={UserSignUp} />
+        <Route exact path="/signout" component={UserSignOut} />
         <Route exact path="/notfound" component={NotFound} />
         <Route exact path="/forbidden" component={Forbidden} />
         <Route exact path="/error" component={UnhandledError} />

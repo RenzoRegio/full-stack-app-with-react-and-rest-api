@@ -14,17 +14,17 @@ export default () => {
               <span>
                 {`Welcome, ${authenticatedUser.user.firstName} ${authenticatedUser.user.lastName}`}
               </span>
-              <NavLink className="signout" to="/sign-out">
+              <NavLink className="signout" to="/signout">
                 Sign Out
               </NavLink>
             </React.Fragment>
           ) : (
             <React.Fragment>
               {" "}
-              <NavLink className="signup" to="/sign-up">
+              <NavLink className="signup" to="/signup">
                 Sign Up
               </NavLink>
-              <NavLink className="signin" to="/sign-in">
+              <NavLink className="signin" to="/signin">
                 Sign In
               </NavLink>
             </React.Fragment>

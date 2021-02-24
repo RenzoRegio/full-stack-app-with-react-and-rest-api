@@ -22,11 +22,6 @@ export default function CreateCourse() {
     authenticatedUser.user.emailAddress
   );
 
-  //DOM to display error styles
-  const form = document.querySelector("form");
-  const titleBox = document.querySelector("#title");
-  const descriptionBox = document.querySelector("#description");
-
   /**
    * Sets the value for the different states of the Course object - title, description, estimatedTime and materialsNeeded.
    * @param {Object} e - Event object.
@@ -67,6 +62,7 @@ export default function CreateCourse() {
         if (errors.length) {
           setErrors(errors);
           const errorsList = document.querySelectorAll(".error");
+          const form = document.querySelector("form");
           validateErrors(errorsList, "red");
           form.addEventListener("submit", (e) => {
             e.preventDefault();
@@ -88,6 +84,8 @@ export default function CreateCourse() {
      */
 
     const validateErrors = (errorsList, color) => {
+      const titleBox = document.querySelector("#title");
+      const descriptionBox = document.querySelector("#description");
       for (let i = 0; i < errorsList.length; i++) {
         const error = errorsList[i].textContent.toLowerCase();
         if (error.includes("title")) {

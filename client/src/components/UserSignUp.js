@@ -5,14 +5,7 @@ import { Context } from "../Context";
 export default () => {
   const { data, actions } = useContext(Context);
   const history = useHistory();
-
-  //DOM for styling the errors (if any)
   const DisplayErrors = actions.DisplayErrors;
-  const form = document.querySelector("form");
-  const firstNameBox = document.querySelector("#firstName");
-  const lastNameBox = document.querySelector("#lastName");
-  const emailBox = document.querySelector("#emailAddress");
-  const passwordBox = document.querySelector("#password");
 
   //Information for the User
   const [firstName, setFirstName] = useState("");
@@ -54,6 +47,7 @@ export default () => {
         if (err.length) {
           setErrors(err);
           const errorsList = document.querySelectorAll("li");
+          const form = document.querySelector("form");
           validateErrors(errorsList, "red");
           form.addEventListener("change", (e) => {
             e.preventDefault();
@@ -77,6 +71,10 @@ export default () => {
    */
 
   const validateErrors = (errorsList, color) => {
+    const firstNameBox = document.querySelector("#firstName");
+    const lastNameBox = document.querySelector("#lastName");
+    const emailBox = document.querySelector("#emailAddress");
+    const passwordBox = document.querySelector("#password");
     for (let i = 0; i < errorsList.length; i++) {
       const error = errorsList[i].textContent.toLowerCase();
       if (error.includes("first")) {
@@ -158,7 +156,7 @@ export default () => {
         <p>&nbsp;</p>
         <p>
           Already have a user account?{" "}
-          <Link className="redirect-link" to="/sign-in">
+          <Link className="redirect-link" to="/signin">
             Click here
           </Link>{" "}
           to sign in!

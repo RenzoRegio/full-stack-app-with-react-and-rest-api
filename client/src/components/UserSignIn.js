@@ -92,7 +92,7 @@ export default (props) => {
       <p>&nbsp;</p>
       <p>
         Don't have a user account?{" "}
-        <Link className="redirect-link" to="/sign-up">
+        <Link className="redirect-link" to="/signup">
           Click here
         </Link>{" "}
         to sign up!

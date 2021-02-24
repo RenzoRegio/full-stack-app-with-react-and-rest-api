@@ -23,7 +23,7 @@ export default () => {
       });
     } catch (err) {
       console.log(err);
-      history.pushState("/error");
+      history.push("/error");
     }
   }
 
